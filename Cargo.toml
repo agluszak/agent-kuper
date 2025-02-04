@@ -1,0 +1,11 @@
+[package]
+name = "kup50"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4.39"
+dotenv = "0.15.0"
+reqwest = { version = "0.12.12", features = ["blocking", "json"] }
+serde = { version = "1.0.217", features = ["derive"] }
+serde_json = "1.0.138"
