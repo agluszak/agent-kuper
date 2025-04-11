@@ -88,7 +88,7 @@ fn fetch_prs_for_month(
 
     // API request URL
     let url = format!(
-        "https://{}/api/http/projects/id:{}/code-reviews?author={}&from={}&to={}&$fields=data(review(title,createdAt,state,number,project))",
+        "https://{}/api/http/projects/id:{}/code-reviews?state=&author={}&from={}&to={}&$fields=data(review(title,createdAt,state,number,project))",
         space_domain, project_id, user_id, start_date, end_date
     );
 
@@ -149,6 +149,7 @@ fn render_pr(idx: i32, pr: &Review, domain: &str, author: &str) -> Option<String
     let project = &pr.project.key;
     let number = pr.number;
     let url = format!("https://{domain}/p/{project}/reviews/{number}");
+    let link = format!("[{}]({})", url, url);
     let status = match pr.state {
         ReviewState::Opened => "Unfinished",
         ReviewState::Closed => "Finished",
@@ -160,21 +161,31 @@ fn render_pr(idx: i32, pr: &Review, domain: &str, author: &str) -> Option<String
         idx,
         pr.title.replace("|", "\\|"),
         author,
-        url,
+        link,
         status,
         creation_date
     ))
 }
 
 const TEMPLATE: &str = r#"
+---
+title: "Formularz rejestracji czasu pracy twórczej"
+author: "JetBrains Poland sp. z o.o."
+date: "{last_day_of_month}"
+geometry: a4paper,landscape,margin=2cm
+fontsize: 10pt
+mainfont: DejaVu Serif
+lang: pl-PL
+---
+
 Warszawa, {last_day_of_month}
 
 # Formularz rejestracji czasu pracy twórczej i Utworów w JetBrains Poland spółka z ograniczoną odpowiedzialnością / Registration form for creative time and Works at JetBrains Poland spółka z ograniczoną odpowiedzialnością
 
 ## Dotyczy miesiąca / Concerns the month of: {month}
 
-| Lp. | Utwór / Work | Autor / Author | Forma ustalenia / Form of the Work’s establishment | Status (ukończony/w trakcie) / Status (finished/unfinished) | Data powstania / Date of creation |
-| --- | ------------ | -------------- | ----------------------------------------------- | -------------------------------------------------------- | --------------------------------- |
+| Lp. | Utwór / Work | Autor / Author | Forma ustalenia / Form of the Work’s establishment | Status | Data powstania / Date of creation |
+| --- | ----------------------------------------------- | ------------------- | ------------------------ | ---------------- | -------------------- |
 {prs}
 
 ### Total % of actual working time spent by creative time: {percent_creative}%
